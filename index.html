@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IESB - Autenticação de Documentos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #831414;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .instruction {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #555;
+        }
+        
+        input[type="text"] {
+            width: 70%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #850f0f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #ff0000;
+        }
+        
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .authentic {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .not-authentic {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+        
+        .student-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .qr-section {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://www.iesb.br/content/themes/iesb-chleba-themosis/assets/imagens/logo.png" alt="IESB Logo" class="logo" onerror="this.onerror=null; this.src=''; this.alt='IESB';">
+        <h2>Sistema de Gestão Eletrônica de Documentos</h2>
+    </header>
+
+    <div class="container">
+        <p class="instruction">Digite o número de confirmação do documento ou escaneie o QR Code para verificar sua autenticidade.</p>
+        
+        <div class="form-container">
+            <input type="text" id="confirmationNumber" placeholder="Número de confirmação">
+            <button id="verifyButton">Verificar Autenticidade</button>
+        </div>
+        
+        <div id="result"></div>
+        
+        <div class="qr-section">
+            <h3>Como verificar a autenticidade?</h3>
+            <p>Todos os documentos oficiais do IESB possuem um QR Code único. Escaneie o código ou digite manualmente o número de confirmação para verificar a autenticidade do documento.</p>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 IESB - Instituto de Educação Superior de Brasília. Todos os direitos reservados.
+    </footer>
+
+    <script>
+        // Simulated JSON database of authenticated documents (in a real scenario, this would be loaded from a file)
+        const authenticatedDocuments = [
+            {
+                "numero": "0923748721",
+                "nome": "Lucas Navarro Garcia",
+                "ra": "12345678 (cu)"
+            },
+            {
+                "numero": "789012",
+                "nome": "Maria Oliveira Souza",
+                "ra": "RA2023002"
+            },
+            {
+                "numero": "345678",
+                "nome": "Pedro Almeida Costa",
+                "ra": "RA2023003"
+            },
+            {
+                "numero": "901234",
+                "nome": "Ana Carolina Ferreira",
+                "ra": "RA2023004"
+            },
+            {
+                "numero": "567890",
+                "nome": "Lucas Mendes Pereira",
+                "ra": "RA2023005"
+            }
+        ];
+
+        // Function to verify document
+        function verifyDocument() {
+            const confirmationNumber = document.getElementById('confirmationNumber').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            // Clear previous results
+            resultDiv.innerHTML = '';
+            resultDiv.className = '';
+            
+            if (!confirmationNumber) {
+                resultDiv.innerHTML = '<p>Por favor, digite um número de confirmação.</p>';
+                resultDiv.className = 'not-authentic';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            // Search for the document in our database
+            const foundDocument = authenticatedDocuments.find(doc => doc.numero === confirmationNumber);
+            
+            if (foundDocument) {
+                // foundDocument is authentic
+                resultDiv.innerHTML = `
+                    <h2>✓ Documento Autêntico</h2>
+                    <p>Este documento foi emitido oficialmente pelo IESB.</p>
+                    <div class="student-info">
+                        <h3>Informações do Estudante:</h3>
+                        <p><strong>Nome:</strong> ${foundDocument.nome}</p>
+                        <p><strong>RA (Registro Acadêmico):</strong> ${foundDocument.ra}</p>
+                    </div>
+                `;
+                resultDiv.className = 'authentic';
+            } else {
+                // foundDocument is not authentic
+                resultDiv.innerHTML = `
+                    <h2>✗ Documento Não Reconhecido</h2>
+                    <p>O número de confirmação <strong>${confirmationNumber}</strong> não foi encontrado em nossos registros.</p>
+                    <p>Se você acredita que isso é um erro, entre em contato com a secretaria acadêmica.</p>
+                `;
+                resultDiv.className = 'not-authentic';
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+
+        // Add event listeners after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to the button
+            document.getElementById('verifyButton').addEventListener('click', verifyDocument);
+            
+            // Add event listener for Enter key in the input field
+            document.getElementById('confirmationNumber').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    verifyDocument();
+                }
+            });
+            
+            // Check if URL contains a confirmation number
+            const urlParams = new URLSearchParams(window.location.search);
+            const confirmationNumber = urlParams.get('numero');
+            
+            if (confirmationNumber) {
+                document.getElementById('confirmationNumber').value = confirmationNumber;
+                verifyDocument();
+            }
+        });
+    </script>
+</body>
+</html>
