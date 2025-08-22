@@ -19,7 +19,7 @@
         }
         
         header {
-            background-color: #660000;
+            background-color: #003366;
             color: white;
             padding: 20px;
             text-align: center;
@@ -60,7 +60,7 @@
         }
         
         button {
-            background-color: #640c19;
+            background-color: #003366;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -71,7 +71,7 @@
         }
         
         button:hover {
-            background-color: #ff0000;
+            background-color: #004a94;
         }
         
         #result {
@@ -118,23 +118,23 @@
 </head>
 <body>
     <header>
-        <img src="https://www.iesb.br/content/themes/iesb-chleba-themosis/assets/imagens/logo.png" alt="IESB Logo" class="logo" onerror="this.onerror=null; this.src=''; this.alt='IESB';">
+        <img src="https://www.iesb.br/content/img/logo.png" alt="IESB Logo" class="logo" onerror="this.onerror=null; this.src=''; this.alt='IESB';">
         <h1>Sistema de Autenticação de Documentos</h1>
     </header>
 
     <div class="container">
-        <p class="instruction">Digite o número de confirmação do documento ou escaneie o Código para verificar sua autenticidade.</p>
+        <p class="instruction">Digite o número de confirmação do documento ou escaneie o QR Code para verificar sua autenticidade.</p>
         
         <div class="form-container">
             <input type="text" id="confirmationNumber" placeholder="Número de confirmação">
-            <button onclick="verifyDocument()">Verificar Autenticidade</button>
+            <button id="verifyButton">Verificar Autenticidade</button>
         </div>
         
         <div id="result"></div>
         
         <div class="qr-section">
             <h3>Como verificar a autenticidade?</h3>
-            <p>Todos os documentos oficiais do IESB possuem um QR Code ou Código de Barras. Escaneie o código ou digite manualmente o número de confirmação para verificar a autenticidade do documento.</p>
+            <p>Todos os documentos oficiais do IESB possuem um QR Code. Escaneie o código ou digite manualmente o número de confirmação para verificar a autenticidade do documento.</p>
         </div>
     </div>
 
@@ -146,9 +146,9 @@
         // Simulated JSON database of authenticated documents (in a real scenario, this would be loaded from a file)
         const authenticatedDocuments = [
             {
-                "numero": "696969",
-                "nome": "Lucas Navarro Garcia",
-                "ra": "6969696969"
+                "numero": "123456",
+                "nome": "João da Silva Santos",
+                "ra": "RA2023001"
             },
             {
                 "numero": "789012",
@@ -172,17 +172,7 @@
             }
         ];
 
-        // Check if URL contains a confirmation number
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const confirmationNumber = urlParams.get('numero');
-            
-            if (confirmationNumber) {
-                document.getElementById('confirmationNumber').value = confirmationNumber;
-                verifyDocument();
-            }
-        };
-
+        // Function to verify document
         function verifyDocument() {
             const confirmationNumber = document.getElementById('confirmationNumber').value.trim();
             const resultDiv = document.getElementById('result');
@@ -225,6 +215,28 @@
             
             resultDiv.style.display = 'block';
         }
+
+        // Add event listeners after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to the button
+            document.getElementById('verifyButton').addEventListener('click', verifyDocument);
+            
+            // Add event listener for Enter key in the input field
+            document.getElementById('confirmationNumber').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    verifyDocument();
+                }
+            });
+            
+            // Check if URL contains a confirmation number
+            const urlParams = new URLSearchParams(window.location.search);
+            const confirmationNumber = urlParams.get('numero');
+            
+            if (confirmationNumber) {
+                document.getElementById('confirmationNumber').value = confirmationNumber;
+                verifyDocument();
+            }
+        });
     </script>
 </body>
 </html>
